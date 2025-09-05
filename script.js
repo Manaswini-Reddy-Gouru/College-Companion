@@ -19,9 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialize the app
 function initializeApp() {
     // Set default data if none exists
-    if (!localStorage.getItem('collegeCompanionData')) {
-        setDefaultData();
-    }
     
     // Show current time in timetable
     updateCurrentTime();
@@ -267,36 +264,48 @@ function handleNoticeSubmit(e) {
     showNotification('Notice added successfully!', 'success');
 }
 
-// Data management functions
-// Helper to get storage key for the current logged-in student
+// script.js (fixed with per-student storage)
+
+// Helper: generate storage key per user
 function getStorageKey() {
-    const currentUser = localStorage.getItem("currentUser");
-    return `collegeCompanionData_${currentUser}`;
+  const currentUser = localStorage.getItem("currentUser");
+  return `collegeCompanionData_${currentUser}`;
 }
 
+// Load data for the logged-in user
 function loadData() {
-    const data = JSON.parse(localStorage.getItem(getStorageKey()) || '{}');
-    assignments = data.assignments || [];
-    subjects = data.subjects || [];
-    notices = data.notices || [];
-    classes = data.classes || []; // Load classes data
-    
-    // Display initial data
-    displayAssignments();
-    displaySubjects();
-    displayNotices();
-    updateOverallAttendance();
+  const data = JSON.parse(localStorage.getItem(getStorageKey()) || '{}');
+  assignments = data.assignments || [];
+  subjects = data.subjects || [];
+  notices = data.notices || [];
+  classes = data.classes || [];
+
+  displayAssignments();
+  displaySubjects();
+  displayNotices();
+  updateOverallAttendance();
 }
 
+// Save data for the logged-in user
 function saveData() {
-    const data = {
-        assignments,
-        subjects,
-        notices,
-        classes // Save classes data
-    };
-    localStorage.setItem(getStorageKey(), JSON.stringify(data));
+  const data = {
+    assignments,
+    subjects,
+    notices,
+    classes
+  };
+  localStorage.setItem(getStorageKey(), JSON.stringify(data));
 }
+
+// Ensure redirect if not logged in
+window.onload = () => {
+  if (!localStorage.getItem("currentUser")) {
+    window.location.href = "login.html";
+  } else {
+    loadData();
+  }
+};
+
 
 
 
@@ -670,5 +679,4 @@ style.textContent = `
         border: 2px dashed #e2e8f0;
     }
 `;
-
 document.head.appendChild(style);
