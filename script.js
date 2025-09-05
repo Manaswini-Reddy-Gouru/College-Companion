@@ -299,95 +299,6 @@ function saveData() {
 }
 
 
-function setDefaultData() {
-    // Sample classes
-    classes = [
-        {
-            id: 1,
-            subject: 'Mathematics',
-            day: 'monday',
-            time: '09:00',
-            room: 'Room 101',
-            professor: 'Prof. Smith'
-        },
-        {
-            id: 2,
-            subject: 'Physics',
-            day: 'tuesday',
-            time: '10:00',
-            room: 'Room 102',
-            professor: 'Prof. Johnson'
-        },
-        {
-            id: 3,
-            subject: 'Chemistry',
-            day: 'monday',
-            time: '14:00',
-            room: 'Room 103',
-            professor: 'Prof. Williams'
-        }
-    ];
-
-    // Sample assignments
-    assignments = [
-        {
-            id: 1,
-            title: 'Mathematics Assignment 1',
-            subject: 'Mathematics',
-            dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-            description: 'Complete exercises 1-10 from Chapter 3',
-            completed: false,
-            createdAt: new Date().toISOString()
-        },
-        {
-            id: 2,
-            title: 'Physics Lab Report',
-            subject: 'Physics',
-            dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-            description: 'Write lab report for Experiment 5',
-            completed: false,
-            createdAt: new Date().toISOString()
-        }
-    ];
-
-    // Sample subjects
-    subjects = [
-        {
-            id: 1,
-            name: 'Mathematics',
-            totalClasses: 20,
-            presentDays: 17,
-            absentDays: 3
-        },
-        {
-            id: 2,
-            name: 'Physics',
-            totalClasses: 18,
-            presentDays: 16,
-            absentDays: 2
-        }
-    ];
-
-    // Sample notices
-    notices = [
-        {
-            id: 1,
-            title: 'Mid-term Examination Schedule',
-            content: 'Mid-term examinations will be held from next week. Please check the detailed schedule on the notice board.',
-            priority: 'high',
-            createdAt: new Date().toISOString()
-        },
-        {
-            id: 2,
-            title: 'Library Hours Extended',
-            content: 'Library will remain open until 10 PM during examination period.',
-            priority: 'medium',
-            createdAt: new Date().toISOString()
-        }
-    ];
-
-    saveData();
-}
 
 // Display functions
 function displayTimetable() {
@@ -759,4 +670,5 @@ style.textContent = `
         border: 2px dashed #e2e8f0;
     }
 `;
+
 document.head.appendChild(style);
