@@ -1,0 +1,40 @@
+{
+  "name": "college-companion-app",
+  "version": "1.0.0",
+  "description": "A modern web application to help college students manage their academic life efficiently",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "serve": "python -m http.server 8000"
+  },
+  "keywords": [
+    "college",
+    "student",
+    "timetable",
+    "attendance",
+    "assignments",
+    "notices",
+    "academic",
+    "education",
+    "web-app",
+    "javascript",
+    "html5",
+    "css3"
+  ],
+  "author": "College Companion Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/college-companion-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/college-companion-app/issues"
+  },
+  "homepage": "https://github.com/yourusername/college-companion-app#readme",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 
