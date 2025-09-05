@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>College Companion</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1">
+    <script src="script.js?v=1"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="script.js?v=2"></script>
-
 </head>
 <body>
-
+    
   
   <button onclick="logout()" 
           style="position: absolute; top: 10px; right: 20px; 
@@ -22,30 +21,24 @@
 
   <script>
   function logout() {
-    // remove login session
-    localStorage.removeItem("loggedInUser"); // old key
-    localStorage.removeItem("currentUser");  // new key
-    localStorage.removeItem("showWelcome");  // clear welcome flag
+    // Remove only current session data
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("showWelcome");
 
-    // redirect to login page
-    window.location.href = "login.html";
-  }
-
-  // ✅ Prevent direct access without login
-  if (!localStorage.getItem("currentUser")) {
+    // Redirect to login page
     window.location.href = "login.html";
   }
 
   // ✅ Show welcome popup after login
   window.addEventListener("load", () => {
-    const user = localStorage.getItem("currentUser");  // username from login
+    const user = localStorage.getItem("currentUser");
     const showWelcome = localStorage.getItem("showWelcome");
 
     if (user && showWelcome === "true") {
       const popup = document.createElement("div");
       popup.textContent = "Welcome, " + user + "!";
       popup.style.position = "fixed";
-      popup.style.top = "20px";
+      popup.style.top = "70px"; // moved down a bit to not overlap profile/logout button
       popup.style.left = "50%";
       popup.style.transform = "translateX(-50%)";
       popup.style.background = "#2575fc";
@@ -64,6 +57,7 @@
     }
   });
 </script>
+
 
 
 
@@ -374,5 +368,4 @@
 
     <script src="script.js"></script>
 </body>
-
 </html>
