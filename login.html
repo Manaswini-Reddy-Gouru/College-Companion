@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>College Companion</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -76,17 +77,18 @@
 
   <script>
   function login() {
-    const username = document.getElementById("loginUsername").value;
+    const username = document.getElementById("loginUsername").value.trim();
     const password = document.getElementById("loginPassword").value;
     const loginMsg = document.getElementById("loginMsg");
 
+    // Get stored password for this username
     const storedPassword = localStorage.getItem(username);
 
     if (storedPassword && storedPassword === password) {
-      // ✅ Save username as currentUser (for per-student storage)
+      // ✅ Save session for logged-in user
       localStorage.setItem("currentUser", username);
 
-      // ✅ Flag for showing welcome message
+      // Flag for welcome popup
       localStorage.setItem("showWelcome", "true");
 
       // Redirect to homepage
@@ -101,3 +103,4 @@
 
 </body>
 </html>
+
