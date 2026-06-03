@@ -31,7 +31,7 @@
 
   // ✅ Show welcome popup after login
   window.addEventListener("load", () => {
-    const user = localStorage.getItem("currentUser");
+    const user = sessionStorage.getItem("currentUser");
     const showWelcome = localStorage.getItem("showWelcome");
 
     if (user && showWelcome === "true") {
