@@ -325,7 +325,7 @@ function saveData() {
 
 // Ensure redirect if not logged in
 window.onload = () => {
-  if (!localStorage.getItem("currentUser")) {
+  if (!sessionStorage.getItem("currentUser")) {
     window.location.href = "login.html";
   } else {
     loadData();
