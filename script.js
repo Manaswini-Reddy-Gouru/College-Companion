@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialize the app
 function initializeApp() {
     // Set default data if none exists
-    
+    initTimetableHourSelect();
+
     // Show current time in timetable
     updateCurrentTime();
     
@@ -109,15 +110,47 @@ function refreshTabData(tabName) {
     }
 }
 
+const TIMETABLE_HOURS = [
+    { value: '08:00', label: '8' },
+    { value: '09:00', label: '9' },
+    { value: '10:00', label: '10' },
+    { value: '11:00', label: '11' },
+    { value: '12:00', label: '12' },
+    { value: '13:00', label: '1' },
+    { value: '14:00', label: '2' },
+    { value: '15:00', label: '3' },
+    { value: '16:00', label: '4' },
+    { value: '17:00', label: '5' },
+    { value: '18:00', label: '6' }
+];
+
+function initTimetableHourSelect() {
+    const select = document.getElementById('classTime');
+    if (!select) return;
+
+    select.innerHTML = '';
+
+    TIMETABLE_HOURS.forEach(({ value, label }) => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = label;
+        select.appendChild(option);
+    });
+}
+
+function getDefaultTimetableHour() {
+    const hour = new Date().getHours();
+    if (hour < 8) return '08:00';
+    if (hour > 18) return '18:00';
+    return `${hour.toString().padStart(2, '0')}:00`;
+}
+
 // Modal functions
 function openTimetableModal() {
+    initTimetableHourSelect();
     document.getElementById('timetableModal').style.display = 'block';
     document.getElementById('timetableForm').reset();
-    
-    // Set default time to current time
-    const now = new Date();
-    const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-    document.getElementById('time').value = currentTime;
+    document.getElementById('classTime').value = getDefaultTimetableHour();
 }
 
 function closeTimetableModal() {
@@ -166,20 +199,13 @@ function handleTimetableSubmit(e) {
     
     const formData = new FormData(e.target);
     
-    // Fix the time format to match HTML data attributes
-    let timeValue = formData.get('time');
-    
-    // Convert time to proper format (HH:MM)
-    if (timeValue) {
-        const [hours, minutes] = timeValue.split(':');
-        timeValue = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
-    }
-    
+    const timeValue = formData.get('classTime');
+
     const classData = {
         id: Date.now(),
         subject: formData.get('subjectName'),
         day: formData.get('day'),
-        time: timeValue,  // ← Now properly formatted
+        time: timeValue,
         room: formData.get('room'),
         professor: formData.get('professor')
     };
@@ -321,7 +347,7 @@ function displayTimetable() {
         slot.innerHTML = '';
         slot.classList.remove('has-class');
         slot.classList.add('empty');
-        slot.innerHTML = '<span>Click to add class</span>';
+        slot.innerHTML = '<span>Click to delete class</span>';
     });
 
     // Display classes in their respective slots
@@ -363,7 +389,7 @@ function displayAssignments() {
         const isOverdue = timeLeft < 0;
         
         const urgencyClass = isOverdue ? 'urgent' : (isUrgent ? 'urgent' : '');
-        const statusText = isOverdue ? 'OVERDUE' : formatTimeLeft(timeLeft);
+        const statusText = assignment.completed ? '' : (isOverdue ? 'OVERDUE' : formatTimeLeft(timeLeft));
         
         return `
             <div class="assignment-card ${urgencyClass}">
@@ -372,16 +398,20 @@ function displayAssignments() {
                         <div class="assignment-title">${assignment.title}</div>
                         <div class="assignment-subject">${assignment.subject}</div>
                     </div>
-                    <div class="assignment-due">${statusText}</div>
+                    ${statusText ? `<div class="assignment-due">${statusText}</div>` : ''}
                 </div>
                 <div class="assignment-description">${assignment.description}</div>
+                ${assignment.completed ? '<div style="color:green;font-weight:bold;margin-top:10px;">✓ Completed</div>' : ''}
                 <div style="margin-top: 15px;">
-                    <button onclick="toggleAssignmentComplete(${assignment.id})" class="att-btn ${assignment.completed ? 'absent' : 'present'}">
-                        ${assignment.completed ? 'Mark Incomplete' : 'Mark Complete'}
-                    </button>
-                    <button onclick="deleteAssignment(${assignment.id})" class="att-btn absent" style="margin-left: 10px;">
-                        Delete
-                    </button>
+                    ${(!isOverdue && !assignment.completed) ? `
+                        <button onclick="toggleAssignmentComplete(${assignment.id})" class="att-btn present">
+                            Mark Complete
+                        </button>
+                        ` : ''}
+
+                        <button onclick="deleteAssignment(${assignment.id})" class="att-btn absent" style="margin-left: 10px;">
+                            Delete
+                        </button>
                 </div>
             </div>
         `;
@@ -397,7 +427,9 @@ function displaySubjects() {
     }
 
     container.innerHTML = subjects.map(subject => {
-        const attendancePercentage = Math.round((subject.presentDays / subject.totalClasses) * 100);
+        const classesCompleted = subject.presentDays + subject.absentDays;
+
+        const attendancePercentage = classesCompleted === 0 ? 0 : Math.round((subject.presentDays / classesCompleted) * 100);
         
         return `
             <div class="subject-card">
@@ -475,8 +507,7 @@ function formatTimeLeft(timeLeft) {
 function updateOverallAttendance() {
     if (subjects.length === 0) {
         document.getElementById('overallAttendance').textContent = '0%';
-        document.getElementById('presentDays').textContent = '0';
-        document.getElementById('absentDays').textContent = '0';
+        
         return;
     }
 
@@ -490,11 +521,12 @@ function updateOverallAttendance() {
         totalClasses += subject.totalClasses;
     });
 
-    const percentage = Math.round((totalPresent / totalClasses) * 100);
+    const attendedClasses = totalPresent + totalAbsent;
+
+    const percentage = attendedClasses === 0 ? 0 : Math.round((totalPresent / attendedClasses) * 100);
     
     document.getElementById('overallAttendance').textContent = `${percentage}%`;
-    document.getElementById('presentDays').textContent = totalPresent;
-    document.getElementById('absentDays').textContent = totalAbsent;
+    
 }
 
 function updateCurrentTime() {
@@ -538,20 +570,32 @@ function deleteAssignment(assignmentId) {
 
 function markAttendance(subjectId, status) {
     const subject = subjects.find(s => s.id === subjectId);
-    if (subject) {
-        if (status === 'present') {
-            subject.presentDays++;
-        } else {
-            subject.absentDays++;
-        }
-        subject.totalClasses++;
-        
-        saveData();
-        displaySubjects();
-        updateOverallAttendance();
-        
-        showNotification(`Marked ${status} for ${subject.name}`, 'success');
+
+    if (!subject) return;
+
+    // Stop if all classes have already been accounted for
+    if ((subject.presentDays + subject.absentDays) >= subject.totalClasses) {
+        showNotification(
+            `Attendance limit reached for ${subject.name}`,
+            'warning'
+        );
+        return;
     }
+
+    if (status === 'present') {
+        subject.presentDays++;
+    } else {
+        subject.absentDays++;
+    }
+
+    saveData();
+    displaySubjects();
+    updateOverallAttendance();
+
+    showNotification(
+        `Marked ${status} for ${subject.name}`,
+        'success'
+    );
 }
 
 function deleteSubject(subjectId) {
