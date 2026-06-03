@@ -86,7 +86,7 @@
 
     if (storedPassword && storedPassword === password) {
       // ✅ Save session for logged-in user
-      localStorage.setItem("currentUser", username);
+      sessionStorage.setItem("currentUser", username);
 
       // Flag for welcome popup
       localStorage.setItem("showWelcome", "true");
