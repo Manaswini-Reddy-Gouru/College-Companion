@@ -350,12 +350,12 @@ body {
 }
 
 .assignment-subject {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 5px 15px;
-    border-radius: 20px;
+    background: none;
+    color: #4a5568;
+    padding: 0;
+    border-radius: 0;
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .assignment-due {
@@ -652,6 +652,26 @@ body {
     outline: none;
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.time-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.time-picker select {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: white;
+}
+
+.time-separator {
+    font-weight: 600;
+    color: #4a5568;
 }
 
 .submit-btn {
