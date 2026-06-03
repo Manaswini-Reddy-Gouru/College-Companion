@@ -294,7 +294,7 @@ function handleNoticeSubmit(e) {
 
 // Helper: generate storage key per user
 function getStorageKey() {
-  const currentUser = localStorage.getItem("currentUser");
+  const currentUser = sessionStorage.getItem("currentUser");
   return `collegeCompanionData_${currentUser}`;
 }
 
