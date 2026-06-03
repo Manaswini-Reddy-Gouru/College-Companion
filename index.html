@@ -22,7 +22,7 @@
   <script>
   function logout() {
     // Remove only current session data
-    localStorage.removeItem("currentUser");
+    sessionStorage.removeItem("currentUser");
     localStorage.removeItem("showWelcome");
 
     // Redirect to login page
